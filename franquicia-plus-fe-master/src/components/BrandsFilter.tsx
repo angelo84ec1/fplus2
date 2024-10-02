@@ -36,97 +36,92 @@ const BrandsFilter = ({
   categoria,
   inversion,
 }: Props) => {
-  const [selectedEstado, setSelectedEstado] = useState<string>("Todas"); // Maneja la selección del estado
+  const [selectedEstado, setSelectedEstado] = useState<string>("Todas");
   const router = useRouter();
 
+  // Utility to remove thousand separators (for prices)
+  const removeThousandsSeparator = (value: string) => {
+    return value.replace(/\./g, "");
+  };
+
+  // Update the search functionality to handle `precio__gte` and `precio__lte`
+  const filtroBuscar = (category?: string, location?: string, inversion?: string) => {
+    let queryParameters: { [key: string]: string } = {};
+
+    if (category) {
+      queryParameters["categoria"] = category;
+    }
+    if (location) {
+      queryParameters["ubicacion"] = location;
+    }
+
+    if (inversion) {
+      if (inversion === "120.000") {
+        queryParameters["precio__gte"] = "120000"; // Use clean number for query
+      } else {
+        const [minPrice, , maxPrice] = inversion.split("-");
+        queryParameters["precio__gte"] = removeThousandsSeparator(minPrice);
+        queryParameters["precio__lte"] = removeThousandsSeparator(maxPrice);
+      }
+    }
+
+    const queryString = new URLSearchParams(queryParameters).toString();
+    const targetUrl = `/franquicias-en-ecuador${queryString ? `?${queryString}` : ""}`;
+    router.push(targetUrl);
+  };
+
   return (
-    <>
-      <div className="w-[30%] lg:flex hidden flex-col gap-y-4 relative">
-        <div className="text-lg ml-4">Buscar otro sector</div>
-        <div className="flex flex-col gap-y-4">
-          <select
-            value={selectedCategory}
-            onChange={(e) => {
-              setSelectedCategory(e.target.value);
-            }}
-            className="sector-select"
-            name="categories"
-          >
-            <option value="">Categoria</option>
-            {categoria.map((cat, index) => (
-              <option key={index} value={cat.nombre}>
-                {cat.nombre}
-              </option>
-            ))}
-          </select>
-          <select
-            value={selectedUbication}
-            onChange={(e) => {
-              setSelectedUbication(e.target.value);
-            }}
-            className="sector-select"
-            name="ubication"
-          >
-            <option value="">Ubicación</option>
-            {ubicacion.map((ubi, index) => (
-              <option key={index} value={ubi.nombre}>
-                {ubi.nombre}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div className="text-lg">Buscar por:</div>
-        <div className="flex flex-col gap-y-4">
-          <Accordion className="first:rounded-r-2xl bg-white w-[85%]">
-            <Accordion.Header
-              style={{ boxShadow: "3px 10px 20px rgb(0 0 0 / 40%)" }}
-              className="border overflow-hidden rounded-r-2xl"
-            >
-              {selectedEstado} {/* Mostrar la opción seleccionada */}
-            </Accordion.Header>
-            <Accordion.Body
-              style={{ boxShadow: "3px 10px 20px rgb(0 0 0 / 40%)" }}
-              className="flex flex-col gap-1 text-sm bg-white rounded-br-2xl z-[1] overflow-hidden border"
-            >
-              {/* Opción "Todas" para revertir el filtro */}
-              <Link
-                className="no-underline text-black hover:text-[#fa5e4d]"
-                onClick={() => setSelectedEstado("Todas")}
-                href="/franquicias-en-ecuador"
-              >
-                Todas
-              </Link>
-
-              {/* Mapeo de las opciones de estados */}
-              {estados.map((estado) => (
-                <Link
-                  className="no-underline text-black hover:text-[#fa5e4d]"
-                  key={estado.id}
-                  href={`/franquicias-en-ecuador?estado=${estado.nombre}`}
-                  onClick={() => setSelectedEstado(estado.nombre)} // Actualiza la opción seleccionada
-                >
-                  {estado.nombre}
-                </Link>
-              ))}
-            </Accordion.Body>
-          </Accordion>
-          <select
-            value={selectedInversion}
-            onChange={(e) => setSelectedInversion(e.target.value)}
-            className="sector-select"
-            name="inversion"
-          >
-            <option value="">Inversión</option>
-            {inversion.map((inv) => (
-              <option key={inv.id} value={inv.nombre_url}>
-                {inv.nombre}
-              </option>
-            ))}
-          </select>
-        </div>
-
+    <div className="w-[30%] lg:flex hidden flex-col gap-y-4 relative">
+      <div className="text-lg ml-4">Buscar otro sector</div>
+      <div className="flex flex-col gap-y-4">
+        <select
+          value={selectedCategory}
+          onChange={(e) => setSelectedCategory(e.target.value)}
+          className="sector-select"
+          name="categories"
+        >
+          <option value="">Categoria</option>
+          {categoria.map((cat, index) => (
+            <option key={index} value={cat.nombre}>
+              {cat.nombre}
+            </option>
+          ))}
+        </select>
+        <select
+          value={selectedUbication}
+          onChange={(e) => setSelectedUbication(e.target.value)}
+          className="sector-select"
+          name="ubication"
+        >
+          <option value="">País</option>
+          {ubicacion.map((ubi, index) => (
+            <option key={index} value={ubi.nombre}>
+              {ubi.nombre}
+            </option>
+          ))}
+        </select>
+        <select
+          value={selectedInversion}
+          onChange={(e) => setSelectedInversion(e.target.value)}
+          className="sector-select"
+          name="inversion"
+        >
+          <option value="">Inversión</option>
+          {inversion.map((inv) => (
+            <option key={inv.id} value={inv.nombre_url}>
+              {inv.nombre}
+            </option>
+          ))}
+        </select>
+        <button
+          type="button"
+          onClick={() => filtroBuscar(selectedCategory, selectedUbication, selectedInversion)}
+          className="text-2xl lg:text-base text-white bg-[#0d132f] rounded-2xl"
+        >
+          Buscar
+        </button>
       </div>
-    </>
+    </div>
   );
 };
 

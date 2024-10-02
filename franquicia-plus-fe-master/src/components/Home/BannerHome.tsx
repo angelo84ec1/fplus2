@@ -52,6 +52,10 @@ export default function BannerHome() {
     setInversion(response.data);
   };
 
+  const removeThousandsSeparator = (value: string) => {
+    return value.replace(/\./g, '');
+  };
+
   const filtroBuscar = (category?: string, location?: string, inversion?: string) => {
     let queryParameters: { [key: string]: string } = {};
 
@@ -65,19 +69,25 @@ export default function BannerHome() {
     console.log(typeof inversion);
 
     if (inversion) {
-      //queryParameters['inversion'] = inversion;
-      if (inversion=='120000') {
-        queryParameters['precio__gte']='120000';
-
-
-
-        }else{
-           queryParameters['precio__gte']=inversion.split('-')[0];
-
-           queryParameters['precio__lte']=inversion.split('-')[2];
-
-
-            }
+        // Si el valor de inversión es '120.000'
+        if (inversion === '120.000') {
+          queryParameters['precio__gte'] = '120.000';
+        } else {
+          // Separar el rango por guión y usar los valores adecuados
+          const [minPrice, , maxPrice] = inversion.split('-');
+  
+          // Guardar los valores con puntos para la URL visible
+          queryParameters['precio__gte'] = minPrice;
+          queryParameters['precio__lte'] = maxPrice;
+  
+          // Para la petición interna, necesitamos remover los puntos
+          const minPriceClean = removeThousandsSeparator(minPrice);
+          const maxPriceClean = removeThousandsSeparator(maxPrice);
+  
+          // Modificar los valores solo para la petición interna
+          queryParameters['precio__gte'] = minPriceClean;
+          queryParameters['precio__lte'] = maxPriceClean;
+        }
 
 
 

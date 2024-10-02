@@ -31,39 +31,57 @@ const BrandsPageComponent = ({
   directory,
   state,
 }: Props) => {
+  const directorios = directory;
+  const estado = state;
+  const ubicacion = ubication;
+  const categoria = category;
+  const inversion = investment;
+
   const [marcas, setMarcas] = useState<Marcas>();
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedUbication, setSelectedUbication] = useState("");
   const [selectedInversion, setSelectedInversion] = useState("");
   const [selectedPrecioMin, setSelectedPrecioMin] = useState("");
   const [selectedPrecioMax, setSelectedPrecioMax] = useState("");
+  const [, setSelectedState] = useState("");
+  const [, setSelectedDirectory] = useState("");
   const [charge, setCharge] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const brandsPerPage = 9;
+
   const router = useRouter();
   const searchParams = useSearchParams();
 
   useEffect(() => {
     const timeout = setTimeout(() => {
       setCharge(false);
-    }, 2000);
+    }, 2000); // Timeout set to 2 seconds for consistency
 
     return () => clearTimeout(timeout);
-  }, []);
+  }, [charge]);
 
   const getMarcas = async () => {
     const estado = searchParams.get("estado");
-    const directorio = searchParams.get("directorio");
-    const categoria = searchParams.get("categoria");
-    const ubicacion = searchParams.get("ubicacion");
-    const precio_min_sel = searchParams.get("precio__gte");
-    const precio_max_sel = searchParams.get("precio__lte");
+    if (estado) setSelectedState(estado);
 
-    setSelectedUbication(ubicacion || "");
-    setSelectedCategory(categoria || "");
-    setSelectedPrecioMin(precio_min_sel || "");
-    setSelectedPrecioMax(precio_max_sel || "");
+    const directorio = searchParams.get("directorio");
+    if (directorio) setSelectedDirectory(directorio);
+
+    const categoria = searchParams.get("categoria");
+    if (categoria) setSelectedCategory(categoria);
+
+    const ubicacion = searchParams.get("ubicacion");
+    if (ubicacion) setSelectedUbication(ubicacion);
+
+    const inversion = searchParams.get("inversion");
+    if (inversion) setSelectedInversion(inversion);
+
+    const precio_min_sel = searchParams.get("precio__gte");
+    if (precio_min_sel) setSelectedPrecioMin(precio_min_sel);
+
+    const precio_max_sel = searchParams.get("precio__lte");
+    if (precio_max_sel) setSelectedPrecioMax(precio_max_sel);
 
     try {
       const response = await axios.get(`/api/v1/marcas/`, {
@@ -80,8 +98,7 @@ const BrandsPageComponent = ({
       setMarcas(response.data);
       setTotalPages(response.data.total_pages);
     } catch (error) {
-      console.log(error);
-      // Aquí podrías agregar lógica para mostrar un mensaje de error en la UI
+      console.error(error);
     }
   };
 
@@ -95,24 +112,25 @@ const BrandsPageComponent = ({
       const response = await axios.get(`/api/v1/marcas/`, {
         params: {
           page_size: brandsPerPage,
-          page: page,
+          page,
           categoria__nombre: selectedCategory,
           ubicacion__nombre: selectedUbication,
+          inversion__nombre: selectedInversion,
           precio__gte: selectedPrecioMin,
           precio__lte: selectedPrecioMax,
         },
       });
       setMarcas(response.data);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
   useEffect(() => {
     let sectors = "";
+
     if (selectedCategory || selectedUbication || selectedPrecioMax || selectedPrecioMin) {
       sectors += "?";
-
       if (selectedCategory) sectors += `categoria=${encodeURIComponent(selectedCategory)}&`;
       if (selectedUbication) sectors += `ubicacion=${encodeURIComponent(selectedUbication)}&`;
       if (selectedPrecioMin) sectors += `precio__gte=${encodeURIComponent(selectedPrecioMin)}&`;
@@ -123,11 +141,7 @@ const BrandsPageComponent = ({
 
     const targetUrl = `/franquicias-en-ecuador${sectors}`;
     router.push(targetUrl);
-  }, [selectedCategory, selectedUbication, selectedPrecioMax, selectedPrecioMin]);
-
-  useEffect(() => {
-    getMarcas();
-  }, []);
+  }, [selectedCategory, selectedInversion, selectedUbication, selectedPrecioMax, selectedPrecioMin]);
 
   return (
     <>
@@ -151,37 +165,20 @@ const BrandsPageComponent = ({
               />
             </div>
             <div className="absolute top-0 bottom-0 lg:left-[80px] left-[60px] flex flex-col text-start text-white justify-center items-start">
-              <div
-                data-aos="fade-right"
-                data-wow-delay="100"
-                style={{ fontFamily: "Mukata Mahee Bold" }}
-                className="text-5xl lg:block hidden font-bold"
-              >
+              {/* Heading text */}
+              <div className="text-5xl lg:block hidden font-bold" style={{ fontFamily: "Mukata Mahee Bold" }}>
                 Invierte en una marca <br /> rentable y comprobada
               </div>
-              <div
-                data-aos="fade-right"
-                data-wow-delay="100"
-                style={{ fontFamily: "Mukata Mahee Bold" }}
-                className="lg:hidden block text-3xl font-bold"
-              >
+              <div className="lg:hidden block text-3xl font-bold" style={{ fontFamily: "Mukata Mahee Bold" }}>
                 Invierte en una <br />
                 marca <br />
                 rentable y <br />
                 comprobada
               </div>
-              <div
-                data-aos="fade-right"
-                data-wow-delay="200"
-                className="lg:block hidden text-3xl "
-              >
+              <div className="lg:block hidden text-3xl" data-aos="fade-right">
                 y sé dueño de tu propio negocio
               </div>
-              <div
-                data-aos="fade-right"
-                data-wow-delay="200"
-                className="lg:hidden block text-xl"
-              >
+              <div className="lg:hidden block text-xl" data-aos="fade-right">
                 y sé dueño de tu propio <br />
                 negocio
               </div>
@@ -189,6 +186,7 @@ const BrandsPageComponent = ({
           </div>
         </div>
       </section>
+
       <section>
         <div id="filter" className="w-full flex lg:flex-row flex-col py-8">
           <BrandsFilter
@@ -198,19 +196,16 @@ const BrandsPageComponent = ({
             setSelectedUbication={setSelectedUbication}
             selectedInversion={selectedInversion}
             setSelectedInversion={setSelectedInversion}
-            directorios={directory}
-            estados={state}
-            ubicacion={ubication}
-            categoria={category}
-            inversion={investment}
+            directorios={directorios}
+            estados={estado}
+            ubicacion={ubicacion}
+            categoria={categoria}
+            inversion={inversion}
           />
           <div className="flex w-full justify-center px-4">
             {charge ? (
               <div className="flex justify-center items-center">
-                <div
-                  style={{ fontFamily: "Mukata Mahee Bold" }}
-                  className="text-[#fa5e4d] text-9xl animate-spin"
-                >
+                <div className="text-[#fa5e4d] text-9xl animate-spin">
                   <CgSpinnerTwoAlt />
                 </div>
               </div>
@@ -224,44 +219,60 @@ const BrandsPageComponent = ({
           </div>
         </div>
       </section>
-      <section>
-        <div className="w-full"></div>
-      </section>
-      <section>
-        {totalPages > 1 && !charge && (
-          <div className="w-full flex lg:justify-end justify-center mt-6">
-            <div className="flex justify-between">
+
+      {totalPages > 1 && !charge && (
+        <section>
+          <div className="w-full flex lg:justify-end justify-center">
+            <div className="flex justify-center lg:w-[70vw] items-center py-4 gap-4">
               <button
                 onClick={() => {
-                  if (currentPage > 1) {
-                    setCurrentPage((prev) => prev - 1);
-                    newPage(currentPage - 1);
-                  }
+                  setCurrentPage((prev) => Math.max(prev - 1, 1));
+                  newPage(Math.max(currentPage - 1, 1));
                 }}
-                className="flex items-center justify-center w-10 h-10 rounded-full border border-[#FA5E4D] text-[#FA5E4D] hover:bg-[#FA5E4D] hover:text-white duration-300"
+                className={`text-5xl w-12 aspect-square ${
+                  currentPage === 1 ? "text-transparent" : "rounded-full text-[#fa5e4d] hover:bg-slate-200 cursor-pointer"
+                }`}
               >
                 <IoIosArrowBack />
               </button>
-              <div className="flex items-center text-[#FA5E4D] mx-4">
-                {currentPage} de {totalPages}
-              </div>
+              {Array.from({ length: totalPages }).map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => {
+                    setCurrentPage(index + 1);
+                    newPage(index + 1);
+                  }}
+                  className={`relative flex justify-center items-center border text-2xl w-12 aspect-square rounded-full cursor-pointer ${
+                    currentPage === index + 1 ? "bg-[#fa5e4d] text-white" : "hover:bg-slate-200"
+                  }`}
+                >
+                  {index + 1}
+                </button>
+              ))}
               <button
                 onClick={() => {
-                  if (currentPage < totalPages) {
-                    setCurrentPage((prev) => prev + 1);
-                    newPage(currentPage + 1);
-                  }
+                  setCurrentPage((prev) => Math.min(prev + 1, totalPages));
+                  newPage(Math.min(currentPage + 1, totalPages));
                 }}
-                className="flex items-center justify-center w-10 h-10 rounded-full border border-[#FA5E4D] text-[#FA5E4D] hover:bg-[#FA5E4D] hover:text-white duration-300"
+                className={`text-5xl w-12 aspect-square ${
+                  currentPage === totalPages ? "text-transparent" : "rounded-full text-[#fa5e4d] hover:bg-slate-200 cursor-pointer"
+                }`}
               >
                 <IoIosArrowForward />
               </button>
             </div>
           </div>
-        )}
+        </section>
+      )}
+
+      <section>
+        <PublicityComponent />
       </section>
-      <Footer />
-      <ChatBot />
+
+      <section>
+        <ChatBot />
+        <Footer />
+      </section>
     </>
   );
 };
