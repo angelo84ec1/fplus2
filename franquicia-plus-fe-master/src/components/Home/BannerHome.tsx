@@ -71,7 +71,7 @@ export default function BannerHome() {
     if (inversion) {
         // Si el valor de inversión es '120.000'
         if (inversion === '120.000') {
-          queryParameters['precio__gte'] = '120.000';
+          queryParameters['precio__gte'] = '120000';
         } else {
           // Separar el rango por guión y usar los valores adecuados
           const [minPrice, , maxPrice] = inversion.split('-');
