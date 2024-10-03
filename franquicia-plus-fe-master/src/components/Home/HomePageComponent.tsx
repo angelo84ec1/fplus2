@@ -161,8 +161,8 @@ const HomePageComponent = ({ popularBrands, newBrands }: props) => {
             </video>
           </a>
         </section>
-        <section className="-mt-24 z-[1] relative text-white pb-10 flex justify-center gradientHomeBg h-full w-full">
-          <div className="sm:max-w-[540px] md:max-w-[720px] lg:max-w-[960px] xl:max-w-[1140px] 2xl:max-w-[1320px] w-full flex items-center flex-col">
+        <section className="-mt-24 z-[0] text-white pb-10 flex justify-center gradientHomeBg h-full w-full">
+          <div className="sm:max-w-[540px] md:max-w-[1100px] lg:max-w-[1800px] xl:max-w-[1300px] 2xl:max-w-[1200px] w-full flex items-center flex-col">
             <div className="flex flex-col mt-20 mb-6 text-center gap-4 lg:gap-0">
               <div
                 style={{ fontFamily: "Mukata Mahee Bold" }}

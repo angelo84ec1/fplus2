@@ -104,7 +104,7 @@ const BrandComponent = ({ detalleMarca }: props) => {
       email !== "" &&
       phone !== "" &&
       country !== "" &&
-      province !== "" &&
+      //province !== "" &&
       brand !== "" &&
       message !== ""
     ) {
@@ -115,8 +115,8 @@ const BrandComponent = ({ detalleMarca }: props) => {
         surname +
         "&pais=" +
         country +
-        "&provincia=" +
-        province +
+        //"&provincia=" +
+        //province +
         "&telefono=" +
         phone +
         "&email=" +
@@ -135,7 +135,7 @@ const BrandComponent = ({ detalleMarca }: props) => {
           contact_email: email,
           contact_phone_number: phone,
           contact_job_title: country,
-          contact_city: province,
+          // contact_city: province,
           cf_contact_comentario_aycp_text: message,
           account_name: brand,
           cf_contact_marca_de_interes_vkby_text: brand,
@@ -194,16 +194,16 @@ const BrandComponent = ({ detalleMarca }: props) => {
               regex: "",
               placeholder: "",
             },
-            contact_city: {
-              name: "Provincia",
-              type: "text",
-              lead: "contact_city",
-              required: "False",
-              options: [],
-              default: "",
-              regex: "",
-              placeholder: "",
-            },
+            //   contact_city: {
+            //   name: "Provincia",
+            // type: "text",
+            // lead: "contact_city",
+            //required: "False",
+            //options: [],
+            //default: "",
+            //regex: "",
+            //placeholder: "",
+            //},
             cf_contact_comentario_aycp_text: {
               name: "Comentario",
               type: "text",
@@ -285,7 +285,7 @@ const BrandComponent = ({ detalleMarca }: props) => {
             surname !== "" &&
             email !== "" &&
             phone !== "" &&
-            province !== "" &&
+            //   province !== "" &&
             country !== "" &&
             message !== ""
           ) {
@@ -296,7 +296,7 @@ const BrandComponent = ({ detalleMarca }: props) => {
             setSurname("");
             setEmail("");
             setPhone("");
-            setProvince("");
+            // setProvince("");
             setCountry("");
             setMessage("");
           }
@@ -921,7 +921,8 @@ const BrandComponent = ({ detalleMarca }: props) => {
                           required
                         />
                       </div>
-                      <div className="relative form-group lg:w-1/2 w-full py-2 px-2 cursor-pointer">
+                      {/* País de Interés (Ahora ocupa toda la fila) */}
+                      <div className="relative form-group w-full py-2 px-2 cursor-pointer">
                         <div
                           className={`absolute top-0 bottom-0 flex items-center right-5 pointer-events-none`}
                         >
@@ -932,7 +933,7 @@ const BrandComponent = ({ detalleMarca }: props) => {
                           />
                         </div>
                         <select
-                          className="form-control cursor-pointer"
+                          className="form-control cursor-pointer w-full"
                           id="pais-interes"
                           name="pais"
                           value={country}
@@ -949,33 +950,36 @@ const BrandComponent = ({ detalleMarca }: props) => {
                         </select>
                       </div>
 
-                      <div className="relative form-group lg:w-1/2 w-full py-2 px-2 cursor-pointer">
-                        <div
-                          className={`absolute top-0 bottom-0 flex items-center right-5 pointer-events-none`}
-                        >
-                          <IoIosArrowDown
-                            style={{
-                              color: brandDetails?.color_boton_formulario,
-                            }}
-                          />
-                        </div>
-                        <select
-                          className="form-control cursor-pointer"
-                          id="province"
-                          name="province"
-                          value={province}
-                          onChange={(e: any) => setProvince(e.target.value)}
-                        >
-                          <option value="" disabled selected>
-                            Provincia de Interés
-                          </option>
-                          {ubications?.map((ubication) => (
-                            <option value={ubication.nombre} key={ubication.id}>
-                              {ubication.nombre}
-                            </option>
-                          ))}
-                        </select>
+                      {/* Comentado - No borrar */}
+                      {/*
+                    <div className="relative form-group lg:w-1/2 w-full py-2 px-2 cursor-pointer">
+                      <div
+                        className={`absolute top-0 bottom-0 flex items-center right-5 pointer-events-none`}
+                      >
+                        <IoIosArrowDown
+                          style={{
+                            color: brandDetails?.color_boton_formulario,
+                          }}
+                        />
                       </div>
+                      <select
+                        className="form-control cursor-pointer"
+                        id="province"
+                        name="province"
+                        value={province}
+                        onChange={(e: any) => setProvince(e.target.value)}
+                      >
+                        <option value="" disabled selected>
+                          Provincia de Interés
+                        </option>
+                        {ubications?.map((ubication) => (
+                          <option value={ubication.nombre} key={ubication.id}>
+                            {ubication.nombre}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    */}
                       <div className="form-group lg:w-1/2 w-full py-2 px-2 relative">
                         <div className="flex items-center border rounded-lg overflow-hidden">
                           <div className="flex items-center px-3 border-r">
