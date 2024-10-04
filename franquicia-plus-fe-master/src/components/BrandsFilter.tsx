@@ -36,39 +36,6 @@ const BrandsFilter = ({
   categoria,
   inversion,
 }: Props) => {
-  const [selectedEstado, setSelectedEstado] = useState<string>("Todas");
-  const router = useRouter();
-
-  // Utility to remove thousand separators (for prices)
-  const removeThousandsSeparator = (value: string) => {
-    return value.replace(/\./g, "");
-  };
-
-  // Update the search functionality to handle `precio__gte` and `precio__lte`
-  const filtroBuscar = (category?: string, location?: string, inversion?: string) => {
-    let queryParameters: { [key: string]: string } = {};
-
-    if (category) {
-      queryParameters["categoria"] = category;
-    }
-    if (location) {
-      queryParameters["ubicacion"] = location;
-    }
-
-    if (inversion) {
-      if (inversion === "120.000") {
-        queryParameters["precio__gte"] = "120000"; // Use clean number for query
-      } else {
-        const [minPrice, , maxPrice] = inversion.split("-");
-        queryParameters["precio__gte"] = removeThousandsSeparator(minPrice);
-        queryParameters["precio__lte"] = removeThousandsSeparator(maxPrice);
-      }
-    }
-
-    const queryString = new URLSearchParams(queryParameters).toString();
-    const targetUrl = `/franquicias-en-ecuador${queryString ? `?${queryString}` : ""}`;
-    router.push(targetUrl);
-  };
 
   return (
     <div className="w-[30%] lg:flex hidden flex-col gap-y-4 relative">
@@ -113,13 +80,6 @@ const BrandsFilter = ({
             </option>
           ))}
         </select>
-        <button
-          type="button"
-          onClick={() => filtroBuscar(selectedCategory, selectedUbication, selectedInversion)}
-          className="text-2xl lg:text-base text-white bg-[#0d132f] rounded-2xl"
-        >
-          Buscar
-        </button>
       </div>
     </div>
   );
