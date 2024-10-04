@@ -66,19 +66,16 @@ export default function BannerHome() {
     if (location) {
       queryParameters['ubicacion'] = location;
     }
-    console.log(typeof inversion);
+    console.log(inversion);
 
     if (inversion) {
         // Si el valor de inversión es '120.000'
         if (inversion === '120.000') {
           queryParameters['precio__gte'] = '120000';
+          queryParameters['precio__lte'] = '10000000000000000000000';
         } else {
           // Separar el rango por guión y usar los valores adecuados
           const [minPrice, , maxPrice] = inversion.split('-');
-  
-          // Guardar los valores con puntos para la URL visible
-          queryParameters['precio__gte'] = minPrice;
-          queryParameters['precio__lte'] = maxPrice;
   
           // Para la petición interna, necesitamos remover los puntos
           const minPriceClean = removeThousandsSeparator(minPrice);
