@@ -126,23 +126,36 @@ const BrandsPageComponent = ({
     }
   };
 
+  const removeThousandsSeparator = (price: string) => price.replace(/\./g, "");
+
   useEffect(() => {
     let sectors = "";
-
-    if (selectedCategory || selectedUbication || selectedPrecioMax || selectedPrecioMin) {
+  
+    if (selectedCategory || selectedUbication || selectedPrecioMax || selectedPrecioMin || selectedInversion) {
       sectors += "?";
       if (selectedCategory) sectors += `categoria=${encodeURIComponent(selectedCategory)}&`;
       if (selectedUbication) sectors += `ubicacion=${encodeURIComponent(selectedUbication)}&`;
-      if (selectedPrecioMin) sectors += `precio__gte=${encodeURIComponent(selectedPrecioMin)}&`;
+      const parsedInversion = selectedInversion.split("-");
+      if (parsedInversion.length === 3) {
+        parsedInversion[1] = parsedInversion[2]
+        parsedInversion.pop();
+        const [minPrice, maxPrice] = parsedInversion.map(price => removeThousandsSeparator(price));
+        sectors+= `precio__gte=${encodeURIComponent(minPrice)}&`;
+        sectors+= `precio__lte=${encodeURIComponent(maxPrice)}&`;
+      } else if (selectedInversion === "120.000") {
+        sectors+= `precio__gte=120000&precio__lte=10000000000000000000000&`;
+      } else {
+        if (selectedPrecioMin) sectors += `precio__gte=${encodeURIComponent(selectedPrecioMin)}&`;
       if (selectedPrecioMax) sectors += `precio__lte=${encodeURIComponent(selectedPrecioMax)}&`;
-
-      sectors = sectors.slice(0, -1);
+      }
+  
+      sectors = sectors.slice(0, -1); // Remove trailing "&"
     }
-
+  
     const targetUrl = `/franquicias-en-ecuador${sectors}`;
     router.push(targetUrl);
   }, [selectedCategory, selectedInversion, selectedUbication, selectedPrecioMax, selectedPrecioMin]);
-
+  
   return (
     <>
       <section>
