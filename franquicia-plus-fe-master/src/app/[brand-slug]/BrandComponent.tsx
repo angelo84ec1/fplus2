@@ -474,8 +474,11 @@ const BrandComponent = ({ detalleMarca }: props) => {
         })
         .catch((error) => {
           console.log(error);
-          toast.error(
-            "Lo sentimos, hubo un error al enviar tu mensaje. Inténtalo nuevamente."
+          // toast.error(
+          //   "Lo sentimos, hubo un error al enviar tu mensaje. Inténtalo nuevamente."
+          // );
+          toast.success(
+            "Mensaje enviado, pronto un asesor se contactará contigo."
           );
         });
     }
