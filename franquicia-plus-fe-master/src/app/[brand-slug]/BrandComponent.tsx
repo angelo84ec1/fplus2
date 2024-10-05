@@ -1094,33 +1094,8 @@ const BrandComponent = ({ detalleMarca }: props) => {
                         />
                       </div>
                       {/* País de Interés (Ahora ocupa toda la fila) */}
-                      <div className="relative form-group w-full py-2 px-2 cursor-pointer">
-                        <div
-                          className={`absolute top-0 bottom-0 flex items-center right-5 pointer-events-none`}
-                        >
-                          <IoIosArrowDown
-                            style={{
-                              color: brandDetails?.color_boton_formulario,
-                            }}
-                          />
-                        </div>
-                        <select
-                          className="form-control cursor-pointer w-full"
-                          id="pais-interes"
-                          name="pais"
-                          value={country}
-                          onChange={handleCountryChange}
-                        >
-                          <option value="" disabled>
-                            País de Interés
-                          </option>
-                          {countries.map((country) => (
-                            <option value={country.name} key={country.code}>
-                              {country.name}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
+                      
+                        
 
                       {/* Comentado - No borrar */}
                       {/*
@@ -1154,9 +1129,27 @@ const BrandComponent = ({ detalleMarca }: props) => {
                     */}
                       <div className="form-group lg:w-1/2 w-full py-2 px-2 relative">
                         <div className="flex items-center border rounded-lg overflow-hidden">
-                          <div className="flex items-center px-3 border-r">
-                            <img src={flag} alt={`${country} Flag`} className="w-6 h-4 mr-2" />
-                            <span className="text-700 font-medium">{phoneCode}</span> 
+                          <div className="flex items-center gap-4 border-r w-[50%]">
+                              <select
+                              className="form-control cursor-pointer w-[60%!important]"
+                              id="pais-interes"
+                              name="pais"
+                              value={country}
+                              onChange={handleCountryChange}
+                            >
+                              <option key={111} value="" disabled>
+                                País de Interés
+                              </option>
+                              {countries.map((country) => (
+                                <option value={country.name} key={country.code}>
+                                  {country.name}
+                                </option>
+                              ))}
+                            </select>
+                            <div className="flex items-center gap-2">
+                            <img src={flag} alt={`${country} Flag`} className="w-6 h-4" />
+                            <span className="text-md">{phoneCode}</span>
+                            </div>
                           </div>
                           <input
                             type="text"
