@@ -31,7 +31,6 @@ import { toast } from "react-toastify";
 import { Sector } from "@/types/Sector";
 import { NextResponse } from "next/server";
 import { CgSpinnerTwoAlt } from "react-icons/cg";
-import { getCountryFlagEmojiFromCountryCode } from "country-codes-flags-phone-codes";
 
 const getUbications = async () => {
   const { data } = await axios.get("/api/v1/ubicacion/");
@@ -219,7 +218,7 @@ const BrandComponent = ({ detalleMarca }: props) => {
   const [ubications, setUbications] = useState<Sector[]>();
   const [name, setName] = useState("");
   const [country, setCountry] = useState("");
-  const [province, setProvince] = useState("");
+  const [province, setProvince] = useState("abc");
   const [surname, setSurname] = useState("");
   const [phone, setPhone] = useState("");
   const [phone2, setPhone2] = useState("");
@@ -269,7 +268,7 @@ const BrandComponent = ({ detalleMarca }: props) => {
       email !== "" &&
       phone !== "" &&
       country !== "" &&
-      //province !== "" &&
+      province !== "" &&
       brand !== "" &&
       message !== ""
     ) {
@@ -280,8 +279,8 @@ const BrandComponent = ({ detalleMarca }: props) => {
         surname +
         "&pais=" +
         country +
-        //"&provincia=" +
-        //province +
+        "&provincia=" +
+        province +
         "&telefono=" +
         phone +
         "&email=" +
@@ -291,7 +290,12 @@ const BrandComponent = ({ detalleMarca }: props) => {
         "&nombremarca=" +
         brand;
 
-      const response = axios.post("/marca/send_email/", parametrosn);
+      const response = axios.post("/marca/send_email/", parametrosn, {
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+          // "Authorization": "Bearer 123456",
+        },
+      });
       console.log(phone)
       axios
         .post("https://api.escala.com/new-lead/", {
@@ -300,7 +304,7 @@ const BrandComponent = ({ detalleMarca }: props) => {
           contact_email: email,
           contact_phone_number: phone,
           contact_job_title: country,
-          // contact_city: province,
+          contact_city: province,
           cf_contact_comentario_aycp_text: message,
           account_name: brand,
           cf_contact_marca_de_interes_vkby_text: brand,
@@ -359,16 +363,16 @@ const BrandComponent = ({ detalleMarca }: props) => {
               regex: "",
               placeholder: "",
             },
-            //   contact_city: {
-            //   name: "Provincia",
-            // type: "text",
-            // lead: "contact_city",
-            //required: "False",
-            //options: [],
-            //default: "",
-            //regex: "",
-            //placeholder: "",
-            //},
+              contact_city: {
+              name: "Provincia",
+            type: "text",
+            lead: "contact_city",
+            required: "False",
+            options: [],
+            default: "",
+            regex: "",
+            placeholder: "",
+            },
             cf_contact_comentario_aycp_text: {
               name: "Comentario",
               type: "text",
